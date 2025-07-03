@@ -1,0 +1,144 @@
+{
+    "frames": {
+        "00000.png": {
+            "frame": {
+                "h": 91,
+                "idx": 0,
+                "w": 568,
+                "x": 0,
+                "y": 0
+            },
+            "sourceSize": {
+                "h": 91,
+                "w": 568
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "00001.png": {
+            "frame": {
+                "h": 91,
+                "idx": 0,
+                "w": 568,
+                "x": 0,
+                "y": 92
+            },
+            "sourceSize": {
+                "h": 91,
+                "w": 568
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "00002.png": {
+            "frame": {
+                "h": 91,
+                "idx": 0,
+                "w": 568,
+                "x": 0,
+                "y": 184
+            },
+            "sourceSize": {
+                "h": 91,
+                "w": 568
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "00003.png": {
+            "frame": {
+                "h": 91,
+                "idx": 0,
+                "w": 568,
+                "x": 0,
+                "y": 276
+            },
+            "sourceSize": {
+                "h": 91,
+                "w": 568
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "00004.png": {
+            "frame": {
+                "h": 91,
+                "idx": 0,
+                "w": 568,
+                "x": 0,
+                "y": 368
+            },
+            "sourceSize": {
+                "h": 91,
+                "w": 568
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "00005.png": {
+            "frame": {
+                "h": 91,
+                "idx": 0,
+                "w": 568,
+                "x": 0,
+                "y": 460
+            },
+            "sourceSize": {
+                "h": 91,
+                "w": 568
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "00006.png": {
+            "frame": {
+                "h": 91,
+                "idx": 0,
+                "w": 568,
+                "x": 0,
+                "y": 552
+            },
+            "sourceSize": {
+                "h": 91,
+                "w": 568
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "00007.png": {
+            "frame": {
+                "h": 91,
+                "idx": 0,
+                "w": 568,
+                "x": 0,
+                "y": 644
+            },
+            "sourceSize": {
+                "h": 91,
+                "w": 568
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    },
+    "meta": {
+        "image": "selectRoleEff3.png",
+        "prefix": "selectRoleEff3/"
+    }
+}

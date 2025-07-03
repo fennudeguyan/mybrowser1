@@ -1,0 +1,38 @@
+name: Build NW.js for macOS
+
+on:
+  push:
+    branches: [ main ]  # 只在 main 分支推送时触发
+  pull_request:
+    branches: [ main ]  # 或 PR 时触发
+
+jobs:
+  build-mac:
+    runs-on: macos-latest  # 必须使用 macOS 环境
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'  # 推荐 Node.js 18/20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install NW.js and nw-builder
+        run: |
+          npm install nw@latest --save-dev
+          npm install nw-builder@latest --save-dev
+
+      - name: Build macOS app
+        run: |
+          npx nwbuild --platforms mac --outDir ./dist
+
+      - name: Upload macOS app as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Your-NWjs-Mac-App
+          path: ./dist/**/*.app  # 上传生成的 .app 文件
