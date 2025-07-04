@@ -28,8 +28,7 @@ jobs:
           npm install nw-builder@latest --save-dev
 
       - name: Build macOS app
-        run: |
-          npx nwbuild --platform mac --outDir ./dist .
+        run: npx nwbuild --platform mac --outDir ./dist ./
 
       - name: Upload macOS app as artifact
         uses: actions/upload-artifact@v4
