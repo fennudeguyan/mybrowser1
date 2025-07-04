@@ -1,62 +1,35 @@
-name: Build NW.js for macOS
+name: Build NW.js App
 
-on:
-  push:
-    branches: [ main ]  # 只在 main 分支推送时触发
-  pull_request:
-    branches: [ main ]  # 或 PR 时触发
+on: [push]
 
 jobs:
   build-mac:
-    runs-on: macos-latest  # 必须使用 macOS 环境
+    runs-on: macos-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          path: 'mybrowser1'  # 显式设置检出路径
+
+      - name: Debug structure
+        working-directory: ./mybrowser1
+        run: ls -la
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'  # 推荐 Node.js 18/20
+          node-version: '20'
 
       - name: Install dependencies
+        working-directory: ./mybrowser1
         run: npm install
 
-      - name: Install NW.js and nw-builder
-        run: |
-          npm install nw@latest --save-dev
-          npm install nw-builder@latest --save-dev
+      - name: Build macOS app
+        working-directory: ./mybrowser1
+        run: npx nwbuild --platform mac --outDir ./dist .
 
-        - name: Debug project structure
-          run: |
-            echo "当前工作目录: $(pwd)"
-            echo "目录结构:"
-            ls -R
-            echo "package.json 内容:"
-            cat package.json || echo "未找到 package.json"
-            echo "nw-builder 版本:"
-            npx nwbuild --version
-    
-        - name: Build macOS app
-          run: |
-            npx nwbuild \
-              --platform mac \
-              --outDir /Users/runner/work/mybrowser1/mybrowser1/dist \
-              /Users/runner/work/mybrowser1/mybrowser1
-
-      - name: Upload macOS app as artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: macOS-App
-          path: ./dist/**/*.app
-          
-      - name: Create DMG
-        run: |
-          brew install create-dmg
-          cd ./dist/侠客先锋/mac/
-          create-dmg YourApp.app
-          
-      - name: Debug directory
-        run: |
-          echo "Current path: $(pwd)"
-          ls -la
+          path: ./mybrowser1/dist/**/*.app
