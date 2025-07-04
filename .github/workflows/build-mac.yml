@@ -1,55 +1,41 @@
 name: Build macOS App
 
-on:
-  push:
-    branches: [ main ]  # 触发分支
+on: [push]
 
 jobs:
   build-mac:
-    runs-on: macos-latest  # 必须使用 macOS 环境
+    runs-on: macos-latest
 
     steps:
-      # 1. 检出代码（不含已删除的 Windows SDK 文件）
       - uses: actions/checkout@v4
 
-      # 2. 下载 Mac 版 NW.js SDK（与你项目的 NW.js 版本保持一致）
       - name: Download Mac NW.js SDK
         run: |
-          NW_VERSION="0.97.0"  # 需与 package.json 中 NW.js 版本一致
+          NW_VERSION="0.77.0"
           curl -L "https://dl.nwjs.io/v${NW_VERSION}/nwjs-sdk-v${NW_VERSION}-osx-x64.zip" -o nwjs-mac.zip
           unzip nwjs-mac.zip -d nwjs-mac
-          mv nwjs-mac/nwjs-sdk-v${NW_VERSION}-osx-x64/nwjs.app ./  # 提取核心文件
+          mv nwjs-mac/nwjs-sdk-v${NW_VERSION}-osx-x64/nwjs.app ./
 
-      # 3. 打包应用
       - name: Package macOS App
         run: |
-          # 创建标准 macOS 应用结构
+          # 创建应用结构
           mkdir -p MyApp.app/Contents/{MacOS,Resources}
-
-          # 复制 Mac 版 NW.js 核心文件
+          
+          # 复制核心文件
           cp -r nwjs.app/Contents/MacOS/* MyApp.app/Contents/MacOS/
           cp nwjs.app/Contents/Info.plist MyApp.app/Contents/
-
-          # 复制你的应用代码（自动排除已删除的 Windows SDK 文件）
+          
+          # 安全复制资源
           mkdir -p MyApp.app/Contents/Resources/app.nw
-          cp -r assets locales index.html package.json MyApp.app/Contents/Resources/app.nw/
-
-          # 设置可执行权限
-          chmod +x MyApp.app/Contents/MacOS/nwjs
-
-          # 输出结构验证
+          for item in assets locales weidaan915 index.html package.json; do
+            [ -e "$item" ] && cp -r "$item" MyApp.app/Contents/Resources/app.nw/ || echo "跳过 $item"
+          done
+          
+          # 验证结构
           ls -lR MyApp.app
 
-      # 4. 生成 ZIP 归档（可选）
-      - name: Create ZIP Archive
-        run: |
-          zip -r MyApp-macOS.zip MyApp.app
-
-      # 5. 上传产物
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: MyApp-macOS
-          path: |
-            MyApp.app
-            MyApp-macOS.zip
+          path: MyApp.app
