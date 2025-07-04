@@ -25,7 +25,7 @@
   },
   "chromium-args": "--enable-logging=stderr --lang=zh-CN --disable-devtools",
   "devDependencies": {
-    "nw-builder": "^3.8.10"
+    "nw-builder": "^3.8.10",
 	"nw": "0.97.0"
   },
   "scripts": {
