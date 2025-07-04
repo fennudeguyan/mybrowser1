@@ -29,7 +29,7 @@
   },
   "scripts": {
     "start": "nw .",
-    "build": "nwbuild --platforms mac --outDir ./dist  --macZip true"
+    "build": "nwbuild --platform mac --outDir ./dist"
   },
   "dependencies": {
     "mime-types": "^2.1.35"
