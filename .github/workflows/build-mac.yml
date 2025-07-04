@@ -29,7 +29,7 @@ jobs:
 
       - name: Build macOS app
         run: |
-          npx nwbuild --platforms mac --outDir ./dist
+          npx nwbuild --platform mac --outDir ./dist
 
       - name: Upload macOS app as artifact
         uses: actions/upload-artifact@v4
