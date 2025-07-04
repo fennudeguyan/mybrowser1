@@ -25,7 +25,6 @@
   },
   "chromium-args": "--enable-logging=stderr --lang=zh-CN --disable-devtools",
   "devDependencies": {
-	"nw": "^0.71.1",
     "nw-builder": "^3.5.7"
   },
   "scripts": {
@@ -33,6 +32,6 @@
     "build": "nwbuild --platforms mac --outDir ./dist  --macZip true"
   },
   "dependencies": {
-    "mime-types": "^0.97.0"
+    "mime-types": "^2.1.35"
   }
 }
