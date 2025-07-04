@@ -24,10 +24,13 @@ jobs:
 
       - name: Build macOS app
         working-directory: ./mybrowser1
-        run: npx nwbuild --platform mac --outDir ./dist .
+        run: |
+          npx nwbuild --platform mac --outDir ./dist .
+          echo "构建结果："
+          ls -lR ./dist/  # 构建后立即查看输出
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: macOS-App
-          path: ./mybrowser1/dist/**/*.app
+          path: ./mybrowser1/dist/*/mac/*.app  # 更通用的匹配
