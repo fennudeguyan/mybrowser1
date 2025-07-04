@@ -34,5 +34,11 @@ jobs:
       - name: Upload macOS app as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Your-NWjs-Mac-App
-          path: ./dist/**/*.app  # 上传生成的 .app 文件
+          name: 侠客先锋
+          path: ./dist/侠客先锋/mac/
+          
+      - name: Create DMG
+        run: |
+          brew install create-dmg
+          cd ./dist/侠客先锋/mac/
+          create-dmg YourApp.app
