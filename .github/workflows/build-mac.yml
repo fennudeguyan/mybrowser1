@@ -9,11 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          path: 'mybrowser1'  # 显式设置检出路径
-
-      - name: Debug structure
-        working-directory: ./mybrowser1
-        run: ls -la
+          path: 'mybrowser1'  # 关键设置
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -22,7 +18,9 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./mybrowser1
-        run: npm install
+        run: |
+          npm install
+          chmod +x node_modules/.bin/*  # 修复所有bin文件权限
 
       - name: Build macOS app
         working-directory: ./mybrowser1
