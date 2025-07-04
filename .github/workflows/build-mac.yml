@@ -7,35 +7,59 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      # 1. 检出代码（不包含Windows SDK文件）
       - uses: actions/checkout@v4
 
-      - name: Download Mac NW.js SDK
-        run: |
-          NW_VERSION="0.77.0"
-          curl -L "https://dl.nwjs.io/v${NW_VERSION}/nwjs-sdk-v${NW_VERSION}-osx-x64.zip" -o nwjs-mac.zip
-          unzip nwjs-mac.zip -d nwjs-mac
-          mv nwjs-mac/nwjs-sdk-v${NW_VERSION}-osx-x64/nwjs.app ./
+      # 2. 设置Node.js环境
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-      - name: Package macOS App
+      # 3. 下载Mac版NW.js SDK（与你package.json中的版本保持一致）
+      - name: Download NW.js SDK
+        run: |
+          NW_VERSION=$(node -p "require('./package.json').devDependencies.nw.replace('^','')")
+          echo "使用NW.js版本: $NW_VERSION"
+          curl -L "https://dl.nwjs.io/v${NW_VERSION}/nwjs-sdk-v${NW_VERSION}-osx-x64.zip" -o nwjs-mac.zip
+          unzip nwjs-mac.zip
+          mv nwjs-sdk-v${NW_VERSION}-osx-x64/nwjs.app ./
+
+      # 4. 构建标准macOS应用
+      - name: Build .app Bundle
         run: |
           # 创建应用结构
           mkdir -p MyApp.app/Contents/{MacOS,Resources}
-          
-          # 复制核心文件
+
+          # 复制NW.js核心文件
           cp -r nwjs.app/Contents/MacOS/* MyApp.app/Contents/MacOS/
           cp nwjs.app/Contents/Info.plist MyApp.app/Contents/
-          
-          # 安全复制资源
+
+          # 打包你的前端代码
           mkdir -p MyApp.app/Contents/Resources/app.nw
-          for item in assets locales weidaan915 index.html package.json; do
-            [ -e "$item" ] && cp -r "$item" MyApp.app/Contents/Resources/app.nw/ || echo "跳过 $item"
-          done
-          
+          cp -r index.html script.js style.css assets/ package.json MyApp.app/Contents/Resources/app.nw/
+
+          # 添加默认图标（可后续替换）
+          cp nwjs.app/Contents/Resources/app.icns MyApp.app/Contents/Resources/
+
+          # 设置权限
+          chmod -R 755 MyApp.app
+
           # 验证结构
           ls -lR MyApp.app
 
+      # 5. 生成可分发的ZIP（包含.app）
+      - name: Create Distribution ZIP
+        run: |
+          zip -r MyApp-MacOS.zip MyApp.app
+          rm -rf nwjs.app  # 清理临时文件
+
+      # 6. 上传成品
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MyApp-macOS
-          path: MyApp.app
+          name: MyApp-MacOS
+          path: |
+            MyApp-MacOS.zip
+            MyApp.app/  # 同时保留原始.app
+          if-no-files-found: error
