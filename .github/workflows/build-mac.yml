@@ -32,7 +32,7 @@ jobs:
           npx nwbuild --platforms mac --outDir ./dist
 
       - name: Upload macOS app as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 侠客先锋
           path: ./dist/侠客先锋/mac/
