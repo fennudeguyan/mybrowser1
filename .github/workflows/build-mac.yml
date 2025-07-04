@@ -34,11 +34,16 @@ jobs:
       - name: Upload macOS app as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: 侠客先锋
-          path: ./dist/侠客先锋/mac/
+          name: macOS-App
+          path: ./dist/**/*.app
           
       - name: Create DMG
         run: |
           brew install create-dmg
           cd ./dist/侠客先锋/mac/
           create-dmg YourApp.app
+          
+      - name: Debug directory
+        run: |
+          echo "Current path: $(pwd)"
+          ls -la
