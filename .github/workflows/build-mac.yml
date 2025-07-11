@@ -26,11 +26,15 @@ jobs:
         
     - name: Build application
       run: |
+        # 强制清除 nw-builder 缓存
+        rm -rf ~/.cache/nw-builder
+        
         npx nwbuild \
           --nwVersion=0.77.0 \
           --flavor=normal \
           --platform=osx64 \
-          --cacheDir=./nw-cache \
+          --no-cache \  # 新增
+          --downloadUrl=https://dl.nwjs.io \
           -o ./dist \
           ./
           

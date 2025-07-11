@@ -19,6 +19,8 @@
   "build": {
     "nwVersion": "0.77.0",
     "flavor": "normal",
-    "platforms": ["osx64"]
+    "platforms": ["osx64"],
+    "downloadUrl": "https://dl.nwjs.io",
+    "forceUseCache": false
   }
 }
