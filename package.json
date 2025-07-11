@@ -7,11 +7,11 @@
   },
   "devDependencies": {
     "nw": "0.77.0",
-    "nw-builder": "^3.6.0"  // 使用有效版本范围
+    "nw-builder": "^3.6.0" 
   },
   "build": {
     "nwVersion": "0.77.0",
-    "flavor": "normal",      // 改用 normal 版本
+    "flavor": "normal", 
     "platforms": ["osx64"]
   }
 }
