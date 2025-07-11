@@ -7,11 +7,11 @@
   },
   "devDependencies": {
     "nw": "0.77.0",
-    "nw-builder": "^3.6.0" 
+    "nw-builder": "^3.6.0"
   },
   "build": {
     "nwVersion": "0.77.0",
-    "flavor": "normal", 
+    "flavor": "normal",
     "platforms": ["osx64"]
   }
 }

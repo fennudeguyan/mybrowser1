@@ -5,7 +5,6 @@ on: [push]
 jobs:
   build-mac:
     runs-on: macos-latest
-    timeout-minutes: 20
     
     steps:
     - uses: actions/checkout@v4
@@ -13,32 +12,30 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'  # 使用 Node.js 18 更稳定
-        cache: 'npm'
+        node-version: '18'
     
     - name: Install dependencies
       run: |
         npm install nw@0.77.0 nw-builder@3.6.0 --save-dev
         npm install
         
-    - name: Build application
+    - name: Build for macOS (64-bit only)
       run: |
         npx nwbuild \
           --nwVersion=0.77.0 \
           --flavor=normal \
-          --platform=osx64 \
+          --platform=osx64 \  # 明确指定64位
           --downloadUrl=https://npmmirror.com/mirrors/nwjs/ \
           -o ./dist \
           .
           
-    - name: Verify build output
+    - name: Verify build
       run: |
         if [ -d "./dist/hero-pioneer/osx64" ]; then
           echo "Build successful!"
-          ls -la ./dist/hero-pioneer/osx64/
         else
-          echo "Build failed. Directory contents:"
-          ls -la ./dist || echo "No dist directory"
+          echo "Build failed. Contents:"
+          ls -R ./dist || echo "No dist directory"
           exit 1
         fi
         
