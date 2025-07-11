@@ -15,17 +15,14 @@ jobs:
       with:
         node-version: '18'
     
+    - name: Clean cache
+      run: |
+        npm run clean || true
+        
     - name: Install dependencies
       run: |
-        # 安装必要工具
-        npm install axios@1.6.2 extract-zip@2.0.1 --save
-        
-        # 安装其他依赖
-        npm install nw-builder@3.6.0 --save-dev
         npm install
-        
-        # 运行下载脚本
-        node scripts/download-nw.js
+        npm install -g npm@latest
         
     - name: Build application
       run: |
