@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "main": "index.html",
   "scripts": {
-    "build": "nwbuild --files='./**/*' -p osx64 -o ./dist ./"
+    "build": "nwbuild --nwVersion=0.66.0 -p osx64 -o ./dist ./"
   },
   "devDependencies": {
-    "nw": "0.77.0",
+    "nw": "0.66.0",
     "nw-builder": "3.6.0"
   },
   "build": {
-    "files": ["./**/*"],
-    "nwVersion": "0.77.0",
+    "nwVersion": "0.66.0",
     "flavor": "normal",
-    "platforms": ["osx64"]
+    "platforms": ["osx64"],
+    "downloadUrl": "https://npmmirror.com/mirrors/nwjs/"
   }
 }

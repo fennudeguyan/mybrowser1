@@ -8,62 +8,46 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        
+    
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '16'  # 使用 Node.js 16 以获得最佳兼容性
     
-    - name: Verify repository files
+    - name: Install exact versions
       run: |
-        echo "当前目录内容:"
-        ls -la
-        echo "index.html 内容:"
-        cat index.html || echo "index.html 不存在"
-        
-    - name: Install dependencies
-      run: |
-        npm install nw@0.77.0 nw-builder@3.6.0 --save-dev
+        npm install nw@0.66.0 nw-builder@3.6.0 --save-dev --legacy-peer-deps
         npm install
         
     - name: Build application
       run: |
-        echo "构建前目录内容:"
-        ls -la
-        
         npx nwbuild \
-          --nwVersion=0.77.0 \
+          --nwVersion=0.66.0 \
           --flavor=normal \
           --platform=osx64 \
-          --files='./**/*' \
           --downloadUrl=https://npmmirror.com/mirrors/nwjs/ \
+          --cacheDir=./nw-cache \
           -o ./dist \
           ./
           
-        echo "构建后目录内容:"
-        ls -la ./dist || echo "dist 目录不存在"
-        
-    - name: Verify build output
+    - name: Verify build
       run: |
-        if [ -d "./dist" ]; then
-          echo "构建成功! 输出文件:"
-          find ./dist -type f
+        if [ -d "./dist/my-app/osx64" ]; then
+          echo "构建成功！应用包内容："
+          ls -la "./dist/my-app/osx64/"
         else
-          echo "构建失败. 调试信息:"
-          npm ls
+          echo "构建失败！dist目录内容："
+          ls -la ./dist || echo "无dist目录"
           exit 1
         fi
         
     - name: Create ZIP package
       run: |
-        cd ./dist/*/osx64/
-        zip -r ../app-mac.zip .
+        cd ./dist/my-app/osx64/
+        zip -r ../my-app-mac.zip .
         
     - name: Upload artifact
-      if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: app-mac
-        path: ./dist/*/app-mac.zip
+        name: my-app-mac
+        path: ./dist/my-app/my-app-mac.zip
