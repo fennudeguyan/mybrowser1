@@ -5,13 +5,16 @@
   "scripts": {
     "postinstall": "node scripts/download-nw.js",
     "build": "nwbuild --nwVersion=0.77.0 -p osx64 -o ./dist ./",
-    "clean": "rm -rf nw-cache dist"
+    "clean": "rm -rf nw-cache dist node_modules package-lock.json"
   },
   "devDependencies": {
     "nw-builder": "3.6.0",
     "axios": "^1.6.2",
-    "rimraf": "^5.0.5",
     "extract-zip": "^2.0.1"
+  },
+  "engines": {
+    "node": ">=18.20.0",
+    "npm": ">=9.0.0"
   },
   "build": {
     "nwVersion": "0.77.0",

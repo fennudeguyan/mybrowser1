@@ -5,24 +5,24 @@ on: [push]
 jobs:
   build-mac:
     runs-on: macos-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Node.js 18
+    - name: Setup Node.js 20
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
     
-    - name: Clean cache
+    - name: Clean environment
       run: |
         npm run clean || true
         
     - name: Install dependencies
       run: |
-        npm install
         npm install -g npm@latest
+        npm install
         
     - name: Build application
       run: |
@@ -41,6 +41,8 @@ jobs:
           ls -la "./dist/my-app/osx64/"
         else
           echo "Build failed! Debug info:"
+          echo "Node version: $(node -v)"
+          echo "npm version: $(npm -v)"
           echo "Project structure:"
           find . -maxdepth 3 -type d
           exit 1

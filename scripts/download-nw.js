@@ -4,7 +4,6 @@ const axios = require('axios');
 const { promisify } = require('util');
 const stream = require('stream');
 const extract = require('extract-zip');
-const rimraf = require('rimraf');
 
 const pipeline = promisify(stream.pipeline);
 
@@ -20,7 +19,7 @@ async function downloadNWjs() {
     
     // 清理旧缓存
     if (fs.existsSync(cacheDir)) {
-      await promisify(rimraf)(cacheDir);
+      fs.rmSync(cacheDir, { recursive: true, force: true });
     }
     
     // 创建缓存目录
@@ -31,7 +30,7 @@ async function downloadNWjs() {
       url,
       method: 'GET',
       responseType: 'stream',
-      timeout: 30000
+      timeout: 60000
     });
 
     await pipeline(
@@ -41,13 +40,13 @@ async function downloadNWjs() {
 
     console.log('Extracting NW.js...');
     
-    // 解压文件（添加冲突处理）
-    await extract(zipPath, {
+    // 解压文件
+    await extract(zipPath, { 
       dir: extractPath,
       onEntry: (entry) => {
         const destPath = path.join(extractPath, entry.fileName);
         if (fs.existsSync(destPath)) {
-          fs.unlinkSync(destPath);
+          fs.rmSync(destPath, { force: true });
         }
       }
     });
