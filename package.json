@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.html",
   "scripts": {
-    "preinstall": "node scripts/preinstall.js",
+    "preinstall": "node preinstall.js",
     "build": "nwbuild --nwVersion=0.76.1 -p osx64 -o ./dist ./"
   },
   "devDependencies": {
