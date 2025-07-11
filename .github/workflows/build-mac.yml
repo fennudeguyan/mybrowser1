@@ -15,11 +15,20 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'  # 推荐使用 Node.js 20 LTS
+        node-version: '20'
         cache: 'npm'
     
-    - name: Install dependencies
-      run: npm ci
+    - name: Clean install dependencies
+      run: |
+        # 确保 lock 文件是最新的
+        if [ -f package-lock.json ]; then
+          npm ci
+        else
+          npm install
+        fi
+        
+    - name: Verify dependencies
+      run: npm ls
       
     - name: Build macOS application
       run: |
@@ -35,4 +44,3 @@ jobs:
       with:
         name: 侠客先锋-macOS
         path: ./dist/侠客先锋/osx64/侠客先锋.dmg
-        retention-days: 5  # 可选：设置产物保留天数
