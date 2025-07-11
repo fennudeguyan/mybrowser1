@@ -1,4 +1,4 @@
-name: Build macOS App
+name: 构建 macOS 应用
 
 on:
   push:
@@ -12,50 +12,59 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up Node.js
+    - name: 设置 Node.js 环境
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
     
-    - name: Install dependencies
+    - name: 安装依赖
       run: |
-        npm ci || npm install
+        npm install
+        npm ls
         
-    - name: Verify environment
+    - name: 调试信息
       run: |
-        echo "Node version: $(node -v)"
-        echo "npm version: $(npm -v)"
-        npx nwbuild --version
+        echo "NW.js版本:"
+        nw --version || echo "NW.js未全局安装"
+        echo "当前目录内容:"
+        ls -la
         
-    - name: Build macOS application
+    - name: 构建应用
       run: |
-        npx nwbuild -p osx64 -o ./dist ./
+        npx nwbuild -v -p osx64 -o ./dist ./
+        echo "构建后目录内容:"
+        ls -la ./dist || echo "dist目录不存在"
         
-    - name: Verify build output
+    - name: 检查构建输出
       run: |
-        echo "Build output structure:"
-        find ./dist -type d || true
-        ls -la ./dist || true
-        
-    - name: Create DMG package
-      run: |
-        BUILD_DIR="./dist/HeroPioneer/osx64"
-        if [ -d "$BUILD_DIR" ]; then
-          cd "$BUILD_DIR"
-          hdiutil create -volname "HeroPioneer" -srcfolder "HeroPioneer.app" -ov -format UDZO "HeroPioneer.dmg"
-          echo "DMG created successfully"
+        if [ -d "./dist" ]; then
+          echo "找到dist目录，内容如下:"
+          find ./dist -type d
+          
+          # 尝试自动查找应用目录
+          APP_PATH=$(find ./dist -name "*.app" -type d | head -n 1)
+          if [ -n "$APP_PATH" ]; then
+            echo "找到应用包: $APP_PATH"
+            mkdir -p ./dist/package/osx64
+            cp -r "$APP_PATH" ./dist/package/osx64/
+          else
+            echo "错误: 未找到.app应用包"
+            exit 1
+          fi
         else
-          echo "Error: Build directory not found at $BUILD_DIR"
-          echo "Actual dist contents:"
-          ls -R ./dist || true
+          echo "错误: dist目录未生成"
           exit 1
         fi
         
-    - name: Upload artifact
-      if: success()
+    - name: 创建DMG安装包
+      run: |
+        cd ./dist/package/osx64
+        APP_NAME=$(basename *.app .app)
+        hdiutil create -volname "$APP_NAME" -srcfolder "$APP_NAME.app" -ov -format UDZO "$APP_NAME.dmg"
+        
+    - name: 上传构建产物
       uses: actions/upload-artifact@v4
       with:
-        name: HeroPioneer-macOS
-        path: ./dist/HeroPioneer/osx64/HeroPioneer.dmg
-        retention-days: 5
+        name: 应用安装包-macOS
+        path: ./dist/package/osx64/*.dmg
