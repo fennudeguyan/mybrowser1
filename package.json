@@ -3,38 +3,21 @@
   "version": "1.0.0",
   "main": "index.html",
   "scripts": {
-    "clean": "rm -rf dist nw-cache node_modules package-lock.json",
-    "prebuild": "npm run clean",
+    "clean": "rm -rf node_modules package-lock.json nw-cache dist",
+    "install": "npm install --legacy-peer-deps",
     "build": "node scripts/build.js",
-    "postbuild": "echo 'Build completed! Artifacts in ./dist'",
-    "test": "echo 'No tests configured' && exit 0"
+    "postinstall": "node scripts/download-nw.js"
   },
   "dependencies": {
     "nw": "0.77.0"
   },
   "devDependencies": {
     "extract-zip": "^2.0.1",
-    "adm-zip": "^0.5.10"
-  },
-  "build": {
-    "nwVersion": "0.77.0",
-    "platform": "osx64",
-    "appName": "MyApp",
-    "outputDir": "dist"
+    "adm-zip": "^0.5.10",
+    "axios": "^1.6.2"
   },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
-  },
-  "keywords": [
-    "nwjs",
-    "desktop-app",
-    "cross-platform"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/your-repo.git"
   }
 }
