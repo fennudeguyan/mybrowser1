@@ -20,13 +20,14 @@
     "resizable": true,
     "devTools": false
   },
-  "build": {
-    "output": "./dist"
-  },
   "chromium-args": "--enable-logging=stderr --lang=zh-CN --disable-devtools",
   "devDependencies": {
-    "nw-builder": "^3.8.10",
-	"nw": "0.97.0"
+    "nw": "0.77.0",
+    "nw-builder": "^3.6.0"
+  },
+  "build": {
+    "output": "./dist",
+    "nwVersion": "0.77.0"
   },
   "scripts": {
     "start": "nw .",

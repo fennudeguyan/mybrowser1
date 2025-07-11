@@ -13,43 +13,35 @@ jobs:
       with:
         node-version: '20'
     
-    - name: Install dependencies
+    - name: Install with exact NW.js version
       run: |
+        npm install nw@0.77.0 --save-dev
         npm install
-        npm install nw-builder --save-dev
         
-    - name: Build with verbose logging
+    - name: Build with version check
       run: |
-        npx nwbuild -v -p osx64 -o ./dist .
-        ls -la ./dist || echo "Build failed"
+        npx nwbuild -v --nwVersion=0.77.0 -p osx64 -o ./dist .
         
-    - name: Check build output
+    - name: Verify build
       run: |
-        if [ ! -d "./dist" ]; then
+        if [ -d "./dist" ]; then
+          echo "Build successful, contents:"
+          find ./dist
+        else
           echo "Build failed, dumping debug info:"
-          npm ls
+          npm ls nw
           npx nwbuild --version
           exit 1
         fi
         
-        APP_PATH=$(find ./dist -name "*.app" -type d | head -n1)
-        if [ -z "$APP_PATH" ]; then
-          echo "No .app bundle found in dist directory:"
-          find ./dist
-          exit 1
-        fi
-        
-        mkdir -p ./dist/package/osx64
-        cp -r "$APP_PATH" ./dist/package/osx64/
-        
-    - name: Create DMG
+    - name: Package DMG
+      if: success()
       run: |
-        cd ./dist/package/osx64
-        APP_NAME=$(basename *.app .app)
-        hdiutil create -volname "$APP_NAME" -srcfolder "$APP_NAME.app" -ov -format UDZO "$APP_NAME.dmg"
+        cd ./dist/*/osx64/
+        hdiutil create -volname "MyApp" -srcfolder "MyApp.app" -ov -format UDZO "MyApp.dmg"
         
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: macOS-App
-        path: ./dist/package/osx64/*.dmg
+        path: ./dist/*/osx64/*.dmg
