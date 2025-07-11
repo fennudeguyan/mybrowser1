@@ -1,16 +1,16 @@
 {
-  "name": "hero-pioneer",
+  "name": "my-app",
   "version": "1.0.0",
   "main": "index.html",
   "scripts": {
-    "build": "nwbuild --nwVersion=0.77.0 -p osx64 -o ./dist ./"
+    "build": "nwbuild --files='./**/*' -p osx64 -o ./dist ./"
   },
   "devDependencies": {
     "nw": "0.77.0",
     "nw-builder": "3.6.0"
   },
   "build": {
-    "files": "./**/*",
+    "files": ["./**/*"],
     "nwVersion": "0.77.0",
     "flavor": "normal",
     "platforms": ["osx64"]

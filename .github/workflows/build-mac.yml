@@ -9,54 +9,61 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # 获取完整仓库历史
+        fetch-depth: 0
         
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
     
+    - name: Verify repository files
+      run: |
+        echo "当前目录内容:"
+        ls -la
+        echo "index.html 内容:"
+        cat index.html || echo "index.html 不存在"
+        
     - name: Install dependencies
       run: |
         npm install nw@0.77.0 nw-builder@3.6.0 --save-dev
         npm install
         
-    - name: Verify files
-      run: |
-        echo "项目文件列表:"
-        ls -la
-        echo "HTML内容:"
-        cat index.html || echo "无index.html文件"
-        
     - name: Build application
       run: |
+        echo "构建前目录内容:"
+        ls -la
+        
         npx nwbuild \
           --nwVersion=0.77.0 \
           --flavor=normal \
           --platform=osx64 \
+          --files='./**/*' \
           --downloadUrl=https://npmmirror.com/mirrors/nwjs/ \
-          --files="./**/*" \  # 明确指定文件匹配模式
           -o ./dist \
-          .
+          ./
           
+        echo "构建后目录内容:"
+        ls -la ./dist || echo "dist 目录不存在"
+        
     - name: Verify build output
       run: |
         if [ -d "./dist" ]; then
-          echo "构建成功! 输出内容:"
+          echo "构建成功! 输出文件:"
           find ./dist -type f
         else
-          echo "构建失败. 当前目录内容:"
-          ls -la
+          echo "构建失败. 调试信息:"
+          npm ls
           exit 1
         fi
         
     - name: Create ZIP package
       run: |
-        cd ./dist/hero-pioneer/osx64/
-        zip -r ../hero-pioneer-mac.zip .
+        cd ./dist/*/osx64/
+        zip -r ../app-mac.zip .
         
     - name: Upload artifact
+      if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: hero-pioneer-mac
-        path: ./dist/hero-pioneer/hero-pioneer-mac.zip
+        name: app-mac
+        path: ./dist/*/app-mac.zip
