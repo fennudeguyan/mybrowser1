@@ -13,33 +13,36 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '18'  # 使用 Node.js 18 更稳定
+        cache: 'npm'
     
-    - name: Clean install
+    - name: Install dependencies
       run: |
-        npm cache clean --force
-        rm -rf node_modules package-lock.json
+        npm install nw@0.77.0 nw-builder@3.6.0 --save-dev
         npm install
         
-    - name: Verify NW.js
-      run: |
-        echo "NW.js versions available:"
-        npm view nw versions --json
-        echo "Installed version:"
-        npm ls nw
-        
-    - name: Build with direct download
+    - name: Build application
       run: |
         npx nwbuild \
           --nwVersion=0.77.0 \
-          --flavor=sdk \
+          --flavor=normal \
           --platform=osx64 \
-          --downloadUrl=https://dl.nwjs.io \
-          --cacheDir=./nw-cache \
+          --downloadUrl=https://npmmirror.com/mirrors/nwjs/ \
           -o ./dist \
           .
           
-    - name: Package application
+    - name: Verify build output
+      run: |
+        if [ -d "./dist/hero-pioneer/osx64" ]; then
+          echo "Build successful!"
+          ls -la ./dist/hero-pioneer/osx64/
+        else
+          echo "Build failed. Directory contents:"
+          ls -la ./dist || echo "No dist directory"
+          exit 1
+        fi
+        
+    - name: Create ZIP package
       run: |
         cd ./dist/hero-pioneer/osx64/
         zip -r ../hero-pioneer-mac.zip .
@@ -49,4 +52,3 @@ jobs:
       with:
         name: hero-pioneer-mac
         path: ./dist/hero-pioneer/hero-pioneer-mac.zip
-        retention-days: 5
