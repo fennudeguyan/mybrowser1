@@ -1,39 +1,17 @@
 {
   "name": "hero-pioneer",
-  "productName": "HeroPioneer",
   "version": "1.0.0",
   "main": "index.html",
-  "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36/Weiduan1.0.0",
-  "description": "A simple browser built with nw.js",
-  "window": {
-    "title": "侠客先锋",
-    "icon": "assets/icon.png",
-    "width": 1200,
-    "height": 600,
-    "frame": false,
-    "min_width": 600,
-    "min_height": 400,
-    "position": "center",
-    "toolbar": false,
-    "show_in_taskbar": true,
-    "kiosk": false,
-    "resizable": true,
-    "devTools": false
+  "scripts": {
+    "build": "nwbuild --nwVersion=0.77.0 -p osx64 -o ./dist ./"
   },
-  "chromium-args": "--enable-logging=stderr --lang=zh-CN --disable-devtools",
   "devDependencies": {
     "nw": "0.77.0",
-    "nw-builder": "^3.6.0"
+    "nw-builder": "3.6.1"
   },
   "build": {
-    "output": "./dist",
-    "nwVersion": "0.77.0"
-  },
-  "scripts": {
-    "start": "nw .",
-    "build": "nwbuild -p osx64,win64 -o ./dist ./"
-  },
-  "dependencies": {
-    "mime-types": "^2.1.35"
+    "nwVersion": "0.77.0",
+    "flavor": "sdk",
+    "platforms": ["osx64"]
   }
 }

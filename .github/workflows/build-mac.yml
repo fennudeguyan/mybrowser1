@@ -5,6 +5,8 @@ on: [push]
 jobs:
   build-mac:
     runs-on: macos-latest
+    timeout-minutes: 20
+    
     steps:
     - uses: actions/checkout@v4
     
@@ -13,35 +15,38 @@ jobs:
       with:
         node-version: '20'
     
-    - name: Install with exact NW.js version
+    - name: Clean install
       run: |
-        npm install nw@0.77.0 --save-dev
+        npm cache clean --force
+        rm -rf node_modules package-lock.json
         npm install
         
-    - name: Build with version check
+    - name: Verify NW.js
       run: |
-        npx nwbuild -v --nwVersion=0.77.0 -p osx64 -o ./dist .
+        echo "NW.js versions available:"
+        npm view nw versions --json
+        echo "Installed version:"
+        npm ls nw
         
-    - name: Verify build
+    - name: Build with direct download
       run: |
-        if [ -d "./dist" ]; then
-          echo "Build successful, contents:"
-          find ./dist
-        else
-          echo "Build failed, dumping debug info:"
-          npm ls nw
-          npx nwbuild --version
-          exit 1
-        fi
-        
-    - name: Package DMG
-      if: success()
+        npx nwbuild \
+          --nwVersion=0.77.0 \
+          --flavor=sdk \
+          --platform=osx64 \
+          --downloadUrl=https://dl.nwjs.io \
+          --cacheDir=./nw-cache \
+          -o ./dist \
+          .
+          
+    - name: Package application
       run: |
-        cd ./dist/*/osx64/
-        hdiutil create -volname "MyApp" -srcfolder "MyApp.app" -ov -format UDZO "MyApp.dmg"
+        cd ./dist/hero-pioneer/osx64/
+        zip -r ../hero-pioneer-mac.zip .
         
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: macOS-App
-        path: ./dist/*/osx64/*.dmg
+        name: hero-pioneer-mac
+        path: ./dist/hero-pioneer/hero-pioneer-mac.zip
+        retention-days: 5
