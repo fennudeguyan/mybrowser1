@@ -1,5 +1,6 @@
 {
-  "name": "侠客先锋",
+  "name": "hero-pioneer",
+  "productName": "HeroPioneer",
   "version": "1.0.0",
   "main": "index.html",
   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36/Weiduan1.0.0",

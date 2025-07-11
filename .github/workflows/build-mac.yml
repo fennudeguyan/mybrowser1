@@ -18,29 +18,44 @@ jobs:
         node-version: '20'
         cache: 'npm'
     
-    - name: Clean install dependencies
+    - name: Install dependencies
       run: |
-        # 确保 lock 文件是最新的
-        if [ -f package-lock.json ]; then
-          npm ci
-        else
-          npm install
-        fi
+        npm ci || npm install
         
-    - name: Verify dependencies
-      run: npm ls
-      
+    - name: Verify environment
+      run: |
+        echo "Node version: $(node -v)"
+        echo "npm version: $(npm -v)"
+        npx nwbuild --version
+        
     - name: Build macOS application
       run: |
         npx nwbuild -p osx64 -o ./dist ./
         
+    - name: Verify build output
+      run: |
+        echo "Build output structure:"
+        find ./dist -type d || true
+        ls -la ./dist || true
+        
     - name: Create DMG package
       run: |
-        cd ./dist/侠客先锋/osx64/
-        hdiutil create -volname "侠客先锋" -srcfolder "侠客先锋.app" -ov -format UDZO "侠客先锋.dmg"
+        BUILD_DIR="./dist/HeroPioneer/osx64"
+        if [ -d "$BUILD_DIR" ]; then
+          cd "$BUILD_DIR"
+          hdiutil create -volname "HeroPioneer" -srcfolder "HeroPioneer.app" -ov -format UDZO "HeroPioneer.dmg"
+          echo "DMG created successfully"
+        else
+          echo "Error: Build directory not found at $BUILD_DIR"
+          echo "Actual dist contents:"
+          ls -R ./dist || true
+          exit 1
+        fi
         
     - name: Upload artifact
+      if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: 侠客先锋-macOS
-        path: ./dist/侠客先锋/osx64/侠客先锋.dmg
+        name: HeroPioneer-macOS
+        path: ./dist/HeroPioneer/osx64/HeroPioneer.dmg
+        retention-days: 5
