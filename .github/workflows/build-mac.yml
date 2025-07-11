@@ -8,7 +8,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-    
+      with:
+        fetch-depth: 0  # 获取完整仓库历史
+        
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -19,23 +21,32 @@ jobs:
         npm install nw@0.77.0 nw-builder@3.6.0 --save-dev
         npm install
         
-    - name: Build for macOS (64-bit only)
+    - name: Verify files
+      run: |
+        echo "项目文件列表:"
+        ls -la
+        echo "HTML内容:"
+        cat index.html || echo "无index.html文件"
+        
+    - name: Build application
       run: |
         npx nwbuild \
           --nwVersion=0.77.0 \
           --flavor=normal \
-          --platform=osx64 \  # 明确指定64位
+          --platform=osx64 \
           --downloadUrl=https://npmmirror.com/mirrors/nwjs/ \
+          --files="./**/*" \  # 明确指定文件匹配模式
           -o ./dist \
           .
           
-    - name: Verify build
+    - name: Verify build output
       run: |
-        if [ -d "./dist/hero-pioneer/osx64" ]; then
-          echo "Build successful!"
+        if [ -d "./dist" ]; then
+          echo "构建成功! 输出内容:"
+          find ./dist -type f
         else
-          echo "Build failed. Contents:"
-          ls -R ./dist || echo "No dist directory"
+          echo "构建失败. 当前目录内容:"
+          ls -la
           exit 1
         fi
         
