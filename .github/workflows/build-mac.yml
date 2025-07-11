@@ -13,9 +13,9 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '16'
+        node-version: '20'  # 推荐使用 Node.js 20 LTS
         cache: 'npm'
     
     - name: Install dependencies
@@ -31,7 +31,8 @@ jobs:
         hdiutil create -volname "侠客先锋" -srcfolder "侠客先锋.app" -ov -format UDZO "侠客先锋.dmg"
         
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: 侠客先锋-macOS
         path: ./dist/侠客先锋/osx64/侠客先锋.dmg
+        retention-days: 5  # 可选：设置产物保留天数
