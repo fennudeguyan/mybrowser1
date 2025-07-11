@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "main": "index.html",
   "scripts": {
-    "preinstall": "node scripts/preinstall.js",
     "build": "nwbuild --nwVersion=0.76.1 -p osx64 -o ./dist ./"
   },
   "devDependencies": {
-    "nw-builder": "3.6.0",
-    "node-fetch": "^2.6.7"
+    "nw": "0.76.1",
+    "nw-builder": "3.6.0"
   },
   "build": {
     "nwVersion": "0.76.1",
     "flavor": "normal",
-    "platforms": ["osx64"]
+    "platforms": ["osx64"],
+    "downloadUrl": "https://dl.nwjs.io"
   }
 }

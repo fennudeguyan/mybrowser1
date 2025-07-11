@@ -17,14 +17,7 @@ jobs:
     
     - name: Install dependencies
       run: |
-        # 安装必要工具
-        npm install node-fetch@2.6.7 --save
-        
-        # 运行自定义安装脚本
-        node scripts/preinstall.js
-        
-        # 安装其他依赖
-        npm install nw-builder@3.6.0 --save-dev
+        npm install nw@0.76.1 nw-builder@3.6.0 --save-dev
         npm install
         
     - name: Build application
@@ -32,7 +25,8 @@ jobs:
         npx nwbuild \
           --nwVersion=0.76.1 \
           --flavor=normal \
-          --platform=osx64 \
+          --platform=osx64 \  # 明确指定64位
+          --downloadUrl=https://dl.nwjs.io \
           --cacheDir=./nw-cache \
           -o ./dist \
           ./
@@ -40,12 +34,14 @@ jobs:
     - name: Verify build
       run: |
         if [ -d "./dist/my-app/osx64" ]; then
-          echo "Build successful! Contents:"
+          echo "构建成功！应用包内容："
           ls -la "./dist/my-app/osx64/"
         else
-          echo "Build failed! Debug info:"
-          echo "Project structure:"
-          find . -maxdepth 3 -type d
+          echo "构建失败！调试信息："
+          echo "NW.js版本："
+          npx nwbuild --version
+          echo "项目结构："
+          find . -type f
           exit 1
         fi
         
