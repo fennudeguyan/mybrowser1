@@ -3,24 +3,11 @@
   "version": "1.0.0",
   "main": "index.html",
   "scripts": {
-    "postinstall": "node scripts/download-nw.js",
-    "build": "nwbuild --nwVersion=0.77.0 -p osx64 -o ./dist ./",
-    "clean": "rm -rf nw-cache dist node_modules package-lock.json"
+    "build": "node scripts/build.js",
+    "clean": "rm -rf dist nw-cache"
   },
   "devDependencies": {
-    "nw-builder": "3.6.0",
-    "axios": "^1.6.2",
-    "extract-zip": "^2.0.1"
-  },
-  "engines": {
-    "node": ">=18.20.0",
-    "npm": ">=9.0.0"
-  },
-  "build": {
-    "nwVersion": "0.77.0",
-    "flavor": "normal",
-    "platforms": ["osx64"],
-    "downloadUrl": "https://dl.nwjs.io",
-    "forceUseCache": false
+    "extract-zip": "^2.0.1",
+    "adm-zip": "^0.5.10"
   }
 }

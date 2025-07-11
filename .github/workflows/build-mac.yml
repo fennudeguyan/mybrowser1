@@ -5,60 +5,23 @@ on: [push]
 jobs:
   build-mac:
     runs-on: macos-latest
-    timeout-minutes: 30
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Node.js 20
+    - name: Setup Node.js 18
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '18'
     
-    - name: Clean environment
-      run: |
-        npm run clean || true
-        
     - name: Install dependencies
-      run: |
-        npm install -g npm@latest
-        npm install
+      run: npm install
         
     - name: Build application
-      run: |
-        # 强制清除 nw-builder 缓存
-        rm -rf ~/.cache/nw-builder
-        
-        npx nwbuild \
-          --nwVersion=0.77.0 \
-          --flavor=normal \
-          --platform=osx64 \
-          --no-cache \  # 新增
-          --downloadUrl=https://dl.nwjs.io \
-          -o ./dist \
-          ./
-          
-    - name: Verify build
-      run: |
-        if [ -d "./dist/my-app/osx64" ]; then
-          echo "Build successful! Contents:"
-          ls -la "./dist/my-app/osx64/"
-        else
-          echo "Build failed! Debug info:"
-          echo "Node version: $(node -v)"
-          echo "npm version: $(npm -v)"
-          echo "Project structure:"
-          find . -maxdepth 3 -type d
-          exit 1
-        fi
-        
-    - name: Create ZIP package
-      run: |
-        cd ./dist/my-app/osx64/
-        zip -r ../my-app-mac.zip .
-        
+      run: npm run build
+      
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: my-app-mac
-        path: ./dist/my-app/my-app-mac.zip
+        path: ./dist/*.zip
