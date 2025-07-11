@@ -5,27 +5,32 @@ on: [push]
 jobs:
   build-mac:
     runs-on: macos-latest
+    timeout-minutes: 20
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Node.js
+    - name: Setup Node.js 18
       uses: actions/setup-node@v4
       with:
-        node-version: '16'  # 使用 Node.js 16 以获得最佳兼容性
+        node-version: '18'
     
-    - name: Install exact versions
+    - name: Install dependencies
       run: |
-        npm install nw@0.66.0 nw-builder@3.6.0 --save-dev --legacy-peer-deps
+        # 清除可能的代理设置
+        npm config delete proxy
+        npm config delete https-proxy
+        
+        # 安装依赖（使用官方源）
+        npm install nw@0.76.1 nw-builder@3.6.0 --save-dev
         npm install
         
     - name: Build application
       run: |
         npx nwbuild \
-          --nwVersion=0.66.0 \
+          --nwVersion=0.76.1 \
           --flavor=normal \
           --platform=osx64 \
-          --downloadUrl=https://npmmirror.com/mirrors/nwjs/ \
           --cacheDir=./nw-cache \
           -o ./dist \
           ./
@@ -33,11 +38,14 @@ jobs:
     - name: Verify build
       run: |
         if [ -d "./dist/my-app/osx64" ]; then
-          echo "构建成功！应用包内容："
+          echo "Build successful! Contents:"
           ls -la "./dist/my-app/osx64/"
         else
-          echo "构建失败！dist目录内容："
-          ls -la ./dist || echo "无dist目录"
+          echo "Build failed! Debug info:"
+          echo "NW.js version:"
+          npx nwbuild --version
+          echo "Project structure:"
+          find . -type f
           exit 1
         fi
         
